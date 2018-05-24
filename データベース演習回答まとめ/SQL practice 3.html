@@ -1,0 +1,638 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>SQL practice 3</title>
+<link rel="STYLESHEET" type="text/css" href="postgres.css">
+</head>
+<body>
+
+<h2>SQL演習3</h2>
+
+以下の演習を行い、結果を提出しなさい。
+必ず -L オプションを指定してログを記録すること。
+<p>
+<pre>
+psql -U ユーザ名 -L ログファイル名 test
+</pre>
+
+
+<ol>
+
+<hr>
+
+<li> <a href="sql1-win.html">SQL演習1</a> で使用した「品目テーブル」を用意しておきなさい。 <p>
+
+<table border="1">
+<caption>品目テーブル</caption>
+<tr>
+<th></th>
+<th>品目コード</th>
+<th>品目名</th>
+<th>販売単価</th>
+<th>仕入単価</th>
+<th>メーカコード</th>
+</tr>
+<tr>
+<th>型</th>
+<td>固定長5文字</td>
+<td>可変長文字列</td>
+<td>整数</td>
+<td>整数</td>
+<td>固定長3文字</td>
+</tr>
+<tr>
+<th>制約</th>
+<td>NULLでない<br>主キーである</td>
+<td>同じ名前が存在しない<br>NULLでない</td>
+<td>50以上である</td>
+<td>50以上である</td>
+<td>NULLでない<br>
+「メーカテーブル」の「メーカコード」を参照する外部キー</td>
+</tr>
+</table>
+<p>
+<table border="1">
+<caption>品目</caption><tr>
+<tr>
+<th>品目コード</th>
+<th>品目名</th>
+<th>販売単価</th>
+<th>仕入単価</th>
+<th>メーカコード</th>
+</tr>
+<tr>
+<td>CP001</td>
+<td>コピー用紙A4</td>
+<td>600</td>
+<td>420</td>
+<td>M01</td>
+</tr>
+<tr>
+<td>CP002</td>
+<td>コピー用紙B5</td>
+<td>500</td>
+<td>350</td>
+<td>M01</td>
+</tr>
+<tr>
+<td>LL001</td>
+<td>ルーズリーフA4</td>
+<td>400</td>
+<td>280</td>
+<td>M03</td>
+</tr>
+<tr>
+<td>LL002</td>
+<td>ルーズリーフB5</td>
+<td>300</td>
+<td>210</td>
+<td>M03</td>
+</tr>
+<tr>
+<td>NT001</td>
+<td>ノートA4</td>
+<td>200</td>
+<td>140</td>
+<td>M02</td>
+</tr>
+<tr>
+<td>NT002</td>
+<td>ノートB5</td>
+<td>200</td>
+<td>140</td>
+<td>M02</td>
+</tr>
+<tr>
+<td>NT003</td>
+<td>ノートA5</td>
+<td>180</td>
+<td>130</td>
+<td>M02</td>
+</tr>
+</table>
+
+
+<p>
+SQL文: 
+
+<hr>
+
+<li> 「売上テーブル」を定義し、結果を確認しなさい。<p>
+
+<table border="1">
+<caption>売上</caption><tr>
+<tr>
+<th></th>
+<th>売上番号</th>
+<th>品目コード</th>
+<th>販売単価</th>
+<th>売上数量</th>
+<th>売上日</th>
+</tr>
+<tr>
+<th>型</th>
+<td>固定長5文字</td>
+<td>固定長5文字</td>
+<td>整数</td>
+<td>整数</td>
+<td>日付</td>
+</tr>
+<tr>
+<th>制約</th>
+<td>NULLでない<br>
+主キー</td>
+<td>NULLでない<br>
+「品目テーブル」の「品目コード」を参照する外部キー</td>
+<td>0以上</td>
+<td>1以上</td>
+<td>NULLでない</td>
+</tr>
+</table>
+
+<P>
+ヒント: DATE
+<P>
+SQL文: 
+<p>
+結果:
+<pre>
+       テーブル "public.uriage"
+   カラム    |      型      |  修飾語
+-------------+--------------+----------
+ uriageno    | character(5) | not null
+ hinmokucode | character(5) | not null
+ hanbaitanka | integer      |
+ uriagesuryo | integer      |
+ uriagedate  | date         | not null
+インデックス:
+    "uriage_pkey" プライマリキー btree (uriageno)
+CHECK 制約:
+    "uriage_hanbaitanka" CHECK (hanbaitanka >= 0)
+    "uriage_uriagesuryo" CHECK (uriagesuryo >= 1)
+外部キー制約:
+    "$1" FOREIGN KEY (hinmokucode) REFERENCES hinmoku(hinmokucode)
+</pre>
+
+<hr>
+
+<li> 「売上テーブル」にデータを追加し、結果を確認しなさい。 <p>
+
+<table border="1">
+<caption>売上</caption><tr>
+<tr>
+<th>売上番号</th>
+<th>品目コード</th>
+<th>販売単価</th>
+<th>売上数量</th>
+<th>売上日</th>
+</tr>
+<tr>
+<td>00001</td>
+<td>CP001</td>
+<td>600</td>
+<td>2</td>
+<td>2004-5-10</td>
+</tr>
+</tr>
+<tr>
+<td>00002</td>
+<td>LL002</td>
+<td>300</td>
+<td>2</td>
+<td>2004-5-10</td>
+</tr>
+</tr>
+<tr>
+<td>00003</td>
+<td>CP001</td>
+<td>600</td>
+<td>1</td>
+<td>2004-5-10</td>
+</tr>
+</tr>
+<tr>
+<td>00004</td>
+<td>CP001</td>
+<td>600</td>
+<td>3</td>
+<td>2004-5-11</td>
+</tr>
+</tr>
+<tr>
+<td>00005</td>
+<td>CP002</td>
+<td>500</td>
+<td>1</td>
+<td>2004-5-11</td>
+</tr>
+</tr>
+<tr>
+<td>00006</td>
+<td>LL002</td>
+<td>300</td>
+<td>1</td>
+<td>2004-5-12</td>
+</tr>
+</tr>
+<tr>
+<td>00007</td>
+<td>CP002</td>
+<td>500</td>
+<td>1</td>
+<td>2004-5-14</td>
+</tr>
+</tr>
+<tr>
+<td>00008</td>
+<td>CP001</td>
+<td>600</td>
+<td>1</td>
+<td>2004-5-15</td>
+</tr>
+</table>
+
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ uriageno | hinmokucode | hanbaitanka | uriagesuryo | uriagedate 
+----------+-------------+-------------+-------------+------------
+ 00001    | CP001       |         600 |           2 | 2004-05-10
+ 00002    | LL002       |         300 |           2 | 2004-05-10
+ 00003    | CP001       |         600 |           1 | 2004-05-10
+ 00004    | CP001       |         600 |           3 | 2004-05-11
+ 00005    | CP002       |         500 |           1 | 2004-05-11
+ 00006    | LL002       |         300 |           1 | 2004-05-12
+ 00007    | CP002       |         500 |           1 | 2004-05-14
+ 00008    | CP001       |         600 |           1 | 2004-05-15
+(8 行)
+</pre>
+
+
+<hr>
+
+<li> 「品目テーブル」には何種類のメーカコードがあるか件数を表示しなさい。 <p>
+
+ヒント: COUNT, DISTINCT
+<p>
+SQL文: 
+<p>
+結果: 
+<pre>
+ count 
+-------
+     3
+(1 行)
+</pre>
+
+
+
+<hr>
+
+<li> 「売上テーブル」をもとに、「売上金額」の合計を計算しなさい。 <p>
+ただし、「売上金額」は 「販売単価」 × 「売上数量」 とする。<p>
+ヒント: SUM
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ sum  
+------
+ 6100
+(1 行)
+</pre>
+
+<hr>
+
+<li> 「品目テーブル」の「販売単価」の平均値を計算しなさい。 <p>
+ヒント: AVG
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+      avg       
+----------------
+ 340.0000000000
+(1 行)
+</pre>
+
+<hr>
+
+<li> 「品目テーブル」の「販売単価」の最大値を計算しなさい。 <p>
+ヒント: MAX
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ max 
+-----
+ 600
+(1 行)
+</pre>
+
+
+
+<hr>
+
+<li> 「品目テーブル」と「売上テーブル」を組み合わせて「売上番号」、
+「品目名」、「品目コード」を取得しなさい。 <p>
+ただし、データは「売上番号」の昇順に出力しなさい。
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ uriageno |  hinmokuname   | hinmokucode 
+----------+----------------+-------------
+ 00001    | コピー用紙A4   | CP001
+ 00002    | ルーズリーフB5 | LL002
+ 00003    | コピー用紙A4   | CP001
+ 00004    | コピー用紙A4   | CP001
+ 00005    | コピー用紙B5   | CP002
+ 00006    | ルーズリーフB5 | LL002
+ 00007    | コピー用紙B5   | CP002
+ 00008    | コピー用紙A4   | CP001
+(8 行)
+</pre>
+
+<hr>
+
+<li> 「品目テーブル」と「売上テーブル」から、「品目コード」、
+「売上番号」、「品目名」、「売上日」 を取得しなさい。 <p>
+ただし、「品目コード」は昇順かつ「売上日」は降順に出力しなさい。
+<p>
+ヒント: ORDER BY, DESC
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ hinmokucode | uriageno |  hinmokuname   | uriagedate 
+-------------+----------+----------------+------------
+ CP001       | 00008    | コピー用紙A4   | 2004-05-15
+ CP001       | 00004    | コピー用紙A4   | 2004-05-11
+ CP001       | 00001    | コピー用紙A4   | 2004-05-10
+ CP001       | 00003    | コピー用紙A4   | 2004-05-10
+ CP002       | 00007    | コピー用紙B5   | 2004-05-14
+ CP002       | 00005    | コピー用紙B5   | 2004-05-11
+ LL002       | 00006    | ルーズリーフB5 | 2004-05-12
+ LL002       | 00002    | ルーズリーフB5 | 2004-05-10
+(8 行)
+</pre>
+
+<hr>
+
+<li> 「品目テーブル」と「売上テーブル」から、「売上番号」、「品目名」、
+「品目コード」、「売上金額」 を取得しなさい。 <p>
+ただし、「売上金額」は 「販売単価」 × 「売上数量」 で計算し、
+「売上番号」の昇順に出力しなさい。
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ uriageno |  hinmokuname   | hinmokucode | 売上金額 
+----------+----------------+-------------+----------
+ 00001    | コピー用紙A4   | CP001       |     1200
+ 00002    | ルーズリーフB5 | LL002       |      600
+ 00003    | コピー用紙A4   | CP001       |      600
+ 00004    | コピー用紙A4   | CP001       |     1800
+ 00005    | コピー用紙B5   | CP002       |      500
+ 00006    | ルーズリーフB5 | LL002       |      300
+ 00007    | コピー用紙B5   | CP002       |      500
+ 00008    | コピー用紙A4   | CP001       |      600
+(8 行)
+</pre>
+
+<hr>
+
+<li> 「品目テーブル」と「売上テーブル」を組み合わせて「売上番号」、
+「品目名」、「品目コード」を取得しなさい。 <p>
+ただし、
+「品目コード」が「品目テーブル」にのみ存在する場合もデータを取得すること。
+また、データは「売上番号」の昇順に出力しなさい。
+<p>
+ヒント: <a href="join.html">LEFT JOIN ON</a>
+
+<p>
+SQL文: 
+<P>
+結果:
+<pre>
+ uriageno |  hinmokuname   | hinmokucode 
+----------+----------------+-------------
+ 00001    | コピー用紙A4   | CP001
+ 00002    | ルーズリーフB5 | LL002
+ 00003    | コピー用紙A4   | CP001
+ 00004    | コピー用紙A4   | CP001
+ 00005    | コピー用紙B5   | CP002
+ 00006    | ルーズリーフB5 | LL002
+ 00007    | コピー用紙B5   | CP002
+ 00008    | コピー用紙A4   | CP001
+          | ルーズリーフA4 | LL001
+          | ノートA4       | NT001
+          | ノートB5       | NT002
+          | ノートA5       | NT003
+(12 行)
+</pre>
+
+<hr>
+
+<li> 「売上テーブル」に存在する「品目コード」の「品目名」を
+「品目テーブル」から取得し
+なさい。 <p>
+ただし、副問合せを使用すること。<P>
+ヒント: IN
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+  hinmokuname   
+----------------
+ コピー用紙A4
+ ルーズリーフB5
+ コピー用紙B5
+(3 行)
+</pre>
+
+
+<hr>
+
+<li> 「売上テーブル」の「売上日」が 2004年5月10日 の「品目コード」の
+「品目名」を
+「品目テーブル」から取得しなさい。<p>
+ただし、副問合せを使用すること。<P>
+
+<p>
+SQL文: 
+<P>
+結果:
+<pre>
+  hinmokuname   
+----------------
+ コピー用紙A4
+ ルーズリーフB5
+(2 行)
+</pre>
+
+<hr>
+
+<li> 2004年5月10日 から 2004年5月12日 の期間に売上実績のない「品目名」
+を
+「品目テーブル」から取得しなさい。 <p>
+ヒント: NOT IN, BETWEEN
+
+<p>
+SQL文: 
+<P>
+結果:
+<pre>
+  hinmokuname   
+----------------
+ ノートA4
+ ノートB5
+ ノートA5
+ ルーズリーフA4
+(4 行)
+</pre>
+
+<hr>
+
+<li> 「品目テーブル」と同じカラムを持つ新しいテーブルを作成しなさい。 <p>
+
+<table border="1">
+<caption>ニュー品目テーブル</caption>
+<tr>
+<th></th>
+<th>品目コード</th>
+<th>品目名</th>
+<th>販売単価</th>
+<th>仕入単価</th>
+<th>メーカコード</th>
+</tr>
+<tr>
+<th>型</th>
+<td>固定長5文字</td>
+<td>可変長文字列</td>
+<td>整数</td>
+<td>整数</td>
+<td>固定長3文字</td>
+</tr>
+<tr>
+<th>制約</th>
+<td>NULLでない<br>主キーである</td>
+<td>同じ名前が存在しない<br>NULLでない</td>
+<td>50以上である</td>
+<td>50以上である</td>
+<td>NULLでない<br>
+「メーカテーブル」の「メーカコード」を参照する外部キー</td>
+</tr>
+</table>
+<p>
+副問合せを使用して、
+作成したテーブルに「品目テーブル」のデータをコピーしなさい。<P>
+
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+
+     テーブル "public.newhinmoku"
+   カラム    |      型      |  修飾語
+-------------+--------------+----------
+ hinmokucode | character(5) | not null
+ hinmokuname | text         | not null
+ hanbaitanka | integer      |
+ shiiretanka | integer      |
+ makercode   | character(3) | not null
+インデックス:
+    "newhinmoku_pkey" プライマリキー btree (hinmokucode)
+    "newhinmoku_hinmokuname_key" ユニーク, btree (hinmokuname)
+CHECK 制約:
+    "newhinmoku_hanbaitanka" CHECK (hanbaitanka >= 50)
+    "newhinmoku_shiiretanka" CHECK (shiiretanka >= 50)
+外部キー制約:
+    "$1" FOREIGN KEY (makercode) REFERENCES maker(makercode)
+
+ hinmokucode |  hinmokuname   | hanbaitanka | shiiretanka | makercode 
+-------------+----------------+-------------+-------------+-----------
+ CP001       | コピー用紙A4   |         600 |         420 | M01
+ LL002       | ルーズリーフB5 |         300 |         210 | M03
+ NT001       | ノートA4       |         200 |         140 | M02
+ NT002       | ノートB5       |         200 |         140 | M02
+ NT003       | ノートA5       |         180 |         130 | M02
+ LL001       | ルーズリーフA4 |         400 |         280 | M03
+ CP002       | コピー用紙B5   |         500 |         350 | M01
+(7 行)
+</pre>
+
+
+<hr>
+
+<li> 「売上テーブル」に存在する「品目コード」の「販売単価」が元の20%増となるように
+「新しい品目テーブル」を更新しなさい。 <p>
+
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ hinmokucode |  hinmokuname   | hanbaitanka | shiiretanka | makercode 
+-------------+----------------+-------------+-------------+-----------
+ NT001       | ノートA4       |         200 |         140 | M02
+ NT002       | ノートB5       |         200 |         140 | M02
+ NT003       | ノートA5       |         180 |         130 | M02
+ LL001       | ルーズリーフA4 |         400 |         280 | M03
+ CP001       | コピー用紙A4   |         720 |         420 | M01
+ LL002       | ルーズリーフB5 |         360 |         210 | M03
+ CP002       | コピー用紙B5   |         600 |         350 | M01
+(7 行)
+</pre>
+
+
+<hr>
+
+<li> 「売上テーブル」に存在しない「品目コード」を持つデータを
+「新しい品目テーブル」から削除しなさい。 <p>
+
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ hinmokucode |  hinmokuname   | hanbaitanka | shiiretanka | makercode 
+-------------+----------------+-------------+-------------+-----------
+ CP001       | コピー用紙A4   |         720 |         420 | M01
+ LL002       | ルーズリーフB5 |         360 |         210 | M03
+ CP002       | コピー用紙B5   |         600 |         350 | M01
+(3 行)
+</pre>
+
+<hr>
+
+</ol>
+
+
+<ul>
+<li> 提出先: 実行結果のテキストファイルを指定された各自のフォルダに提出すること。
+<li> 期限: 授業中に指示された時間までに提出すること。
+提出し直す場合は、元のファイルはそのままにして、追加で提出すること。
+</ul>
+
+</body>
+</html>

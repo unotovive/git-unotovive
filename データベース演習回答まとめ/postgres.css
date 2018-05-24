@@ -1,0 +1,29 @@
+pre {
+    color: white;
+    background-color: black;
+    border-color: black;
+    border-style: solid;
+    border-width: thick;
+    margin: 3%;
+}
+
+span {
+    color: wheat;
+}
+
+span.error {
+       color: yellow;
+}
+
+span.em {
+       color: red;
+}
+
+#error {
+       color: yellow;
+}
+
+#em {
+       color: red;
+}
+

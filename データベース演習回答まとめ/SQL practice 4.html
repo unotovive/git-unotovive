@@ -1,0 +1,284 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>SQL practice 4</title>
+<link rel="STYLESHEET" type="text/css" href="postgres.css">
+</head>
+<body>
+
+<h2>SQL演習4</h2>
+
+以下の演習を行い、結果を提出しなさい。
+必ず -L オプションを指定してログを記録すること。
+<p>
+<pre>
+psql -U ユーザ名 -L ログファイル名 test
+</pre>
+
+
+<ol>
+
+<li> <a href="sql3-win.html">SQL演習3</a> で使用した「品目テーブル」と
+「売上テーブル」を用意しておきなさい。 <p>
+
+<table border="1">
+<caption>品目</caption>
+<tr>
+<th>品目コード</th>
+<th>品目名</th>
+<th>販売単価</th>
+<th>仕入単価</th>
+<th>メーカコード</th>
+</tr>
+<tr>
+<td>CP001</td>
+<td>コピー用紙A4</td>
+<td>600</td>
+<td>420</td>
+<td>M01</td>
+</tr>
+<tr>
+<td>CP002</td>
+<td>コピー用紙B5</td>
+<td>500</td>
+<td>350</td>
+<td>M01</td>
+</tr>
+<tr>
+<td>LL001</td>
+<td>ルーズリーフA4</td>
+<td>400</td>
+<td>280</td>
+<td>M03</td>
+</tr>
+<tr>
+<td>LL002</td>
+<td>ルーズリーフB5</td>
+<td>300</td>
+<td>210</td>
+<td>M03</td>
+</tr>
+<tr>
+<td>NT001</td>
+<td>ノートA4</td>
+<td>200</td>
+<td>140</td>
+<td>M02</td>
+</tr>
+<tr>
+<td>NT002</td>
+<td>ノートB5</td>
+<td>200</td>
+<td>140</td>
+<td>M02</td>
+</tr>
+<tr>
+<td>NT003</td>
+<td>ノートA5</td>
+<td>180</td>
+<td>130</td>
+<td>M02</td>
+</tr>
+</table>
+<P>
+<table border="1">
+<caption>売上</caption>
+<tr>
+<th>売上番号</th>
+<th>品目コード</th>
+<th>販売単価</th>
+<th>売上数量</th>
+<th>売上日</th>
+</tr>
+<tr>
+<td>00001</td>
+<td>CP001</td>
+<td>600</td>
+<td>2</td>
+<td>2004-5-10</td>
+</tr>
+</tr>
+<tr>
+<td>00002</td>
+<td>LL002</td>
+<td>300</td>
+<td>2</td>
+<td>2004-5-10</td>
+</tr>
+</tr>
+<tr>
+<td>00003</td>
+<td>CP001</td>
+<td>600</td>
+<td>1</td>
+<td>2004-5-10</td>
+</tr>
+</tr>
+<tr>
+<td>00004</td>
+<td>CP001</td>
+<td>600</td>
+<td>1</td>
+<td>2004-5-11</td>
+</tr>
+</tr>
+<tr>
+<td>00005</td>
+<td>CP002</td>
+<td>500</td>
+<td>1</td>
+<td>2004-5-11</td>
+</tr>
+</tr>
+<tr>
+<td>00006</td>
+<td>LL002</td>
+<td>300</td>
+<td>1</td>
+<td>2004-5-12</td>
+</tr>
+</tr>
+<tr>
+<td>00007</td>
+<td>CP002</td>
+<td>500</td>
+<td>1</td>
+<td>2004-5-14</td>
+</tr>
+</tr>
+<tr>
+<td>00008</td>
+<td>CP001</td>
+<td>600</td>
+<td>1</td>
+<td>2004-5-15</td>
+</tr>
+</table>
+<P>
+
+
+<hr>
+
+<li> 「品目販売単価ビュー」を作成しなさい。 <p>
+「品目テーブル」から「品目コード」、「品目名」、「販売単価」を取得して使用すること。
+<P>
+ヒント: CREATE VIEW AS SELECT, \d+
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ hinmokucode |  hinmokuname   | hanbaitanka 
+-------------+----------------+-------------
+ CP001       | コピー用紙A4   |         600
+ LL002       | ルーズリーフB5 |         300
+ NT001       | ノートA4       |         200
+ NT002       | ノートB5       |         200
+ NT003       | ノートA5       |         180
+ LL001       | ルーズリーフA4 |         400
+ CP002       | コピー用紙B5   |         500
+(7 行)
+</pre>
+
+<hr>
+
+<li> 「売上品目ビュー」を作成しなさい。 <p>
+「売上テーブル」から「売上番号」、「品目コード」、「売上数量」、
+「売上日」を取得し、
+「品目テーブル」から「品目名」を取得して使用すること <p>
+
+
+<p>
+SQL文: 
+<p>
+結果:
+<pre>
+ uriageno | hinmokucode |  hinmokuname   | uriagesuryo | uriagedate 
+----------+-------------+----------------+-------------+------------
+ 00001    | CP001       | コピー用紙A4   |           2 | 2004-05-10
+ 00003    | CP001       | コピー用紙A4   |           1 | 2004-05-10
+ 00004    | CP001       | コピー用紙A4   |           3 | 2004-05-11
+ 00008    | CP001       | コピー用紙A4   |           1 | 2004-05-15
+ 00005    | CP002       | コピー用紙B5   |           1 | 2004-05-11
+ 00007    | CP002       | コピー用紙B5   |           1 | 2004-05-14
+ 00002    | LL002       | ルーズリーフB5 |           2 | 2004-05-10
+ 00006    | LL002       | ルーズリーフB5 |           1 | 2004-05-12
+(8 行)
+</pre>
+
+<hr>
+
+<li> 「未売上品目ビュー」を作成しなさい。 <p>
+売上実績のない品目の「品目コード」と「品目名」を「品目テーブル」
+から取得した結果を使用すること。
+
+<p>
+SQL文: create view miuriagehinmoku as select hinmokucode,hinmokuname from hinmoku where hinmokucode not in(select hinmokucode from uriage);
+<p>
+結果:
+<pre>
+ hinmokucode |  hinmokuname   
+-------------+----------------
+ NT001       | ノートA4
+ NT002       | ノートB5
+ NT003       | ノートA5
+ LL001       | ルーズリーフA4
+(4 行)
+</pre>
+
+<hr>
+
+<li> 「未売上品目ビュー」を削除しなさい。 <p>
+ヒント: DROP VIEW
+
+<p>
+SQL文: drop view miuriagehinmoku;
+
+
+<hr>
+
+<li> 「品目テーブル」の「品目コード」と「メーカコード」の
+「品目インデックス」を作成しなさい。 <p>
+ヒント: CREATE INDEX ON, \di
+
+<p>
+SQL文: create index hinmokuindex on hinmoku(hinmokucode,makercode);
+<p>
+結果:
+<pre>
+                     リレーションの一覧
+ スキーマ |     名前     |      型      | 所有者 | テーブル
+----------+--------------+--------------+--------+----------
+ public   | hinmokuindex | インデックス | masuda | hinmoku
+(1 行)
+</pre>
+
+見かけ上は何も変化がないように思えるが、
+インデックスを付けておくと検索が速くなる。
+
+<hr>
+
+<li> 「品目インデックス」を削除しなさい。 <p>
+ヒント: DROP INDEX
+
+<p>
+SQL文: DROP INDEX hinmokuindex;
+
+
+<hr>
+
+
+
+
+</ol>
+
+
+<ul>
+<li> 提出先: 実行結果のテキストファイルを指定された各自のフォルダに提出すること。
+<li> 期限: 授業中に指示された時間までに提出すること。
+提出し直す場合は、元のファイルはそのままにして、追加で提出すること。
+</ul>
+
+</body>
+</html>
