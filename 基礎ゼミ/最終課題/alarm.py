@@ -1,25 +1,44 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import locale
 import serial_write
 from time import sleep
+#セットされているか
+tSet=False
+timerset=datetime(2000,1,1,0,0,0,0)
 
-rang = True
-timerset=datetime(2018,5,31,16,35,0)
-def a_set(time):
-    global timer
-    timer=time
-    return
+def a_set(hour,minute):
+    global timerset 
+    global tSet
+    tSet=True
+    timerset=datetime(2018,6,1,11,8,0)
+    now=datetime.now()
+    timerset=datetime(now.year,now.month,now.day,hour,minute,0,0)
+    if(now.hour>=hour):
+        if(now.minute>minute):
+            tom=now.day+1
+            timerset=datetime(now.year,now.month,tom,hour,minute,0)
+    print(timerset)
+    serial_write.serial_w("set_LED_S");
+
+def unSet():
+    global tSet
+    tSet=False
+    serial_write.serial_w("set_LED_N");
 
 def timer():
-     if(timerset.hour==datetime.now().hour):
-         if(timerset.minute==datetime.now().minute):
+    global tSet
+    if tSet:
+        now = datetime.now() 
+        if(now>=timerset):
             print("time is match")
-            rang=False
+            tSet=False
+    
 
 if __name__ == "__main__":
-    while rang:
-        timer();
-        print(timerset.minute)
-        print(datetime.now().minute)
-        sleep(5);
+    a_set(14,28)
+    while True:
+        timer()
+        print(datetime.now())
+        print(timerset)
+        sleep(10)
         
