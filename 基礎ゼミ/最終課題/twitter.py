@@ -1,6 +1,10 @@
 from requests_oauthlib import OAuth1Session
 import json
 url = "https://api.twitter.com/1.1/statuses/user_timeline.json"
+def tweet(CK, CS, AT, AS, ID,msg):
+    twitter = OAuth1Session(CK, CS, AT, AS)
+    params = {"status": msg}
+    req = twitter.post("https://api.twitter.com/1.1/statuses/update.json",params = params)
 #tweetid取得
 def get_tweetID(CK, CS, AT, AS, ID):
     params = {"user_id": ID, "count": 1}
@@ -53,3 +57,4 @@ if __name__ == "__main__":
     last_id ="1001336067411226630"
     print(get_tweetID(CK, CS, AT, AS, ID))
     print(get_user_timeline(CK, CS, AT, AS, ID, last_id))
+    tweet("基礎ゼミぃ！！！")

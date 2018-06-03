@@ -1,6 +1,6 @@
 import serial
 from time import sleep
-port="COM7"
+port="COM4"
 
 def serial_w(msg):
     with serial.Serial(port,9600) as ser:

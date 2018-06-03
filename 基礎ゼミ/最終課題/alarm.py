@@ -18,21 +18,29 @@ def a_set(hour,minute):
             tom=now.day+1
             timerset=datetime(now.year,now.month,tom,hour,minute,0)
     print(timerset)
-    serial_write.serial_w("set_LED_S");
+    serial_write.serial_w("do_t_L")
+    sleep(3);
+    serial_write.serial_w("cc_S")
 
 def unSet():
     global tSet
     tSet=False
-    serial_write.serial_w("set_LED_N");
+    serial_write.serial_w("cc_N")
 
 def timer():
     global tSet
     if tSet:
         now = datetime.now() 
         if(now>=timerset):
-            print("time is match")
+            print("==お知らせ==")
+            print("--指定の時刻になりました--")
+            print("")
+            serial_write.serial_w("do_t_L")
+            sleep(3)
+            serial_write.serial_w("do_t_L")
+            sleep(3)
+            serial_write.serial_w("do_rang")
             tSet=False
-    
 
 if __name__ == "__main__":
     a_set(14,28)
@@ -40,5 +48,5 @@ if __name__ == "__main__":
         timer()
         print(datetime.now())
         print(timerset)
-        sleep(10)
+        sleep(8)
         
