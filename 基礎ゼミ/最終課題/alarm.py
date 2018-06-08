@@ -37,8 +37,8 @@ def timer():
             print("")
             serial_write.serial_w("do_t_L")
             sleep(3)
-            serial_write.serial_w("do_t_L")
-            sleep(3)
+            #serial_write.serial_w("do_t_L")
+            #sleep(3)
             serial_write.serial_w("do_rang")
             tSet=False
 

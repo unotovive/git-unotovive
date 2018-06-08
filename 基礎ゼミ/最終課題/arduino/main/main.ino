@@ -42,13 +42,13 @@ void loop(){
   if (Serial.available() > 0) {
     String command = Serial.readString();
     if(command=="do_t_L"){
-      sendSignal(2);
+      sendSignal(3);
     }
     if(command=="do_t_on_A"){
-      sendSignal(0);
+      sendSignal(3);
     }
     if(command=="do_t_off_A"){
-      sendSignal(1);
+      sendSignal(3);
     }
     if(command=="do_rang"){
       digitalWrite(6,HIGH);
